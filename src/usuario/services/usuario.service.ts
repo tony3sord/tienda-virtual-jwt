@@ -38,6 +38,27 @@ export class UsuarioService {
   }
 
   async updateUsuario(id: number, updateUsuario: UpdateUsuarioDto) {
-    return await this.usuarioRpository.updateUsuario(id, updateUsuario);
+    try {
+      const validation = await this.usuarioRpository.getUsuario(id);
+      if (!validation) {
+        throw new NotFoundException('Usuario no encontrado');
+      } else {
+        const validarEmail = await this.usuarioRpository.getUsuarioByEmail(
+          updateUsuario.email,
+        );
+        if (validarEmail.id != id) {
+          throw new NotFoundException('Este correo ya existe');
+        }
+        const validarUsuario = await this.usuarioRpository.getUserByUser(
+          updateUsuario.user,
+        );
+        if (validarUsuario.id != id) {
+          throw new NotFoundException('Este usuario ya existe');
+        }
+        return await this.usuarioRpository.updateUsuario(id, updateUsuario);
+      }
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 }

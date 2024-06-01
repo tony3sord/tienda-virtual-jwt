@@ -1,12 +1,19 @@
-import { Repository } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Producto } from '../entity/producto.entity';
 import { CreateProductoDto, UpdateProductoDto } from '../dto';
 
-export class ProductoRepository extends Repository<Producto> {
+export class ProductoRepository {
+  constructor(private dataSource: EntityManager) {}
+
   async getProductos(): Promise<Producto[]> {
-    return await this.find();
+    return await this.dataSource
+      .getRepository(Producto)
+      .createQueryBuilder('producto')
+      .getMany();
   }
-  async insertProducto(producto: CreateProductoDto): Promise<Producto> {
+
+  async createProducto(producto: CreateProductoDto): Promise<Producto> {
+    const productoRepository = this.dataSource.getRepository(Producto);
     let newProducto = new Producto();
     newProducto.title = producto.title;
     newProducto.description = producto.description;
@@ -19,17 +26,23 @@ export class ProductoRepository extends Repository<Producto> {
     newProducto.sizes = [...producto.sizes.map(String)];
     newProducto.types = producto.types;
     newProducto.gender = producto.gender;
-    return await this.save(newProducto);
+    return await productoRepository.save(newProducto);
   }
 
   async updateProducto(
     id: number,
     producto: UpdateProductoDto,
   ): Promise<Producto> {
-    const productoToUpdate = await this.findOne({ where: { id: id } });
+    const productoRepository = this.dataSource.getRepository(Producto);
+    const productoToUpdate = await productoRepository
+      .createQueryBuilder('producto')
+      .where('producto.id = :id', { id })
+      .getOne();
+
     if (!productoToUpdate) {
-      throw new Error('Usuario not found');
+      throw new Error('Producto not found');
     }
+
     productoToUpdate.title = producto.title;
     productoToUpdate.description = producto.description;
     productoToUpdate.amount = producto.amount;
@@ -41,10 +54,14 @@ export class ProductoRepository extends Repository<Producto> {
     productoToUpdate.sizes = [...producto.sizes.map(String)];
     productoToUpdate.types = producto.types;
     productoToUpdate.gender = producto.gender;
-    return await this.save(productoToUpdate);
+    return await productoRepository.save(productoToUpdate);
   }
 
   async getProducto(id: number): Promise<Producto> {
-    return await this.findOne({ where: { id: id } });
+    return await this.dataSource
+      .getRepository(Producto)
+      .createQueryBuilder('producto')
+      .where('producto.id = :id', { id })
+      .getOne();
   }
 }

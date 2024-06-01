@@ -30,15 +30,15 @@ export class AppModule implements OnModuleInit {
 
   async onModuleInit() {
     const adminUser = await this.userService.getSuperAdmin();
-    const user: CreateUsuarioDto = {
-      name: 'Super Admin',
-      email: 'super@gmail.com',
-      lastname: 'Super Admin',
-      user: 'super',
-      password: '1234',
-      role: 'SuperAdmin',
-    };
     if (!adminUser) {
+      const user: CreateUsuarioDto = {
+        name: 'Super Admin',
+        email: 'super@gmail.com',
+        lastname: 'Super Admin',
+        user: 'super',
+        password: '1234',
+        role: 'SuperAdmin',
+      };
       await this.userService.createUsuario(user);
     }
   }
