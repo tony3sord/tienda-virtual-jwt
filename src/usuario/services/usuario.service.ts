@@ -18,7 +18,23 @@ export class UsuarioService {
   }
 
   async createUsuario(createUsuario: CreateUsuarioDto) {
-    return await this.usuarioRpository.createUsuario(createUsuario);
+    const validation = await this.usuarioRpository.getUsuarioByEmail(
+      createUsuario.email,
+    );
+    const validation2 = await this.usuarioRpository.getUserByUser(
+      createUsuario.user,
+    );
+    try {
+      if (validation) {
+        throw new NotFoundException('Este correo ya existe');
+      }
+      if (validation2) {
+        throw new NotFoundException('Este usuario ya existe');
+      }
+      return await this.usuarioRpository.createUsuario(createUsuario);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 
   async updateUsuario(id: number, updateUsuario: UpdateUsuarioDto) {

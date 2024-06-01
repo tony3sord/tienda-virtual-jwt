@@ -79,4 +79,12 @@ export class UsuarioRepository {
       .where({ role: 'SuperAdmin' })
       .getOne();
   }
+
+  async getUserByUser(user: string) {
+    return await this.dataSource
+      .getRepository(Usuario)
+      .createQueryBuilder('usuario')
+      .where({ user: user })
+      .getOne();
+  }
 }
