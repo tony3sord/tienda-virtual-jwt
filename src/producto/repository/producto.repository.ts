@@ -70,4 +70,16 @@ export class ProductoRepository {
       .where('producto.id = :id', { id })
       .getOne();
   }
+
+  async deleteProducto(id: number) {
+    const productoRepository = this.dataSource.getRepository(Producto);
+    const productoToDelete = await productoRepository
+      .createQueryBuilder('producto')
+      .where('producto.id = :id', { id })
+      .getOne();
+    if (!productoToDelete) {
+      throw new Error('Producto not found');
+    }
+    return await productoRepository.remove(productoToDelete);
+  }
 }

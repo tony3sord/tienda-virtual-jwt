@@ -10,7 +10,9 @@ async function bootstrap() {
   app.enableCors({});
   const config = new DocumentBuilder()
     .setTitle('API de la tienda Somos los mejores "Pinga"')
-    .setDescription('La documentación de la API')
+    .setDescription(
+      'Cuando se inicia el servidor la api busca un super admin y si no esta creado lo crea email:super@gmail.com,password:1234',
+    )
     .setVersion('1.0')
     .addTag('rutas')
     .build();

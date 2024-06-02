@@ -61,4 +61,24 @@ export class UsuarioService {
       throw new NotFoundException(error.message);
     }
   }
+
+  async deleteUsuario(id: number, password: string) {
+    try {
+      const validation = await this.usuarioRpository.getUsuario(id);
+      if (!validation) {
+        throw new NotFoundException('Usuario no encontrado');
+      } else {
+        const validarPassword = bcrypt.compareSync(
+          password,
+          validation.password,
+        );
+        if (validarPassword == false) {
+          throw new NotFoundException('Contraseña incorrecta');
+        }
+        return await this.usuarioRpository.deleteUsuario(id);
+      }
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
 }

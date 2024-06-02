@@ -18,4 +18,8 @@ export class ProductoService {
   async updateProducto(id: number, updateProducto) {
     return await this.productoRepository.updateProducto(id, updateProducto);
   }
+
+  async deleteProducto(id: number) {
+    return await this.productoRepository.deleteProducto(id);
+  }
 }

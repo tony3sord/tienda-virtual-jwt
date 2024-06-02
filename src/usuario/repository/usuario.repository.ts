@@ -30,7 +30,6 @@ export class UsuarioRepository {
       .where('usuario.id = :id', { id })
       .getOne();
 
-
     if (!usuarioToUpdate) {
       throw new Error('Usuario not found');
     }
@@ -101,5 +100,13 @@ export class UsuarioRepository {
       .createQueryBuilder('usuario')
       .where({ user: user })
       .getOne();
+  }
+
+  async deleteUsuario(id: number) {
+    return await this.dataSource
+      .getRepository(Usuario)
+      .createQueryBuilder('usuario')
+      .where({ id: id })
+      .delete();
   }
 }

@@ -4,6 +4,7 @@ import { AuthService } from '../service/auth.service';
 import { Request as ExpressRequest } from 'express';
 import { Usuario } from 'src/usuario/entity/usuario.entity';
 import { UsuarioRepository } from 'src/usuario/repository/usuario.repository';
+import { ApiOperation, ApiProperty } from '@nestjs/swagger';
 
 interface RequestWithUser extends ExpressRequest {
   user: Usuario;
@@ -17,11 +18,14 @@ export class AuthController {
   ) {}
 
   @Post('login')
+  @ApiProperty({ type: LoginUsuarioDto })
+  @ApiOperation({ summary: 'Login' })
   async Login(@Body() loginDto: LoginUsuarioDto) {
     return await this.authService.login(loginDto);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Devuelve el usaurio autenticado' })
   async getMe(@Req() req: RequestWithUser) {
     const user = req.user;
     const usuario = await this.usuarioRepositorio.getUsuarioByEmail(
