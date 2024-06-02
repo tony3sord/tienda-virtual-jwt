@@ -46,13 +46,13 @@ export class UsuarioService {
         const validarEmail = await this.usuarioRpository.getUsuarioByEmail(
           updateUsuario.email,
         );
-        if (validarEmail.id != id) {
+        if (validarEmail && validarEmail.id != id) {
           throw new NotFoundException('Este correo ya existe');
         }
         const validarUsuario = await this.usuarioRpository.getUserByUser(
           updateUsuario.user,
         );
-        if (validarUsuario.id != id) {
+        if (validarUsuario && validarUsuario.id != id) {
           throw new NotFoundException('Este usuario ya existe');
         }
         return await this.usuarioRpository.updateUsuario(id, updateUsuario);

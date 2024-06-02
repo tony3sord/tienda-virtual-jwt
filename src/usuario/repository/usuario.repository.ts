@@ -30,14 +30,29 @@ export class UsuarioRepository {
       .where('usuario.id = :id', { id })
       .getOne();
 
+
     if (!usuarioToUpdate) {
       throw new Error('Usuario not found');
     }
 
-    usuarioToUpdate.name = usuario.name;
-    usuarioToUpdate.lastname = usuario.lastname;
-    usuarioToUpdate.email = usuario.email;
-    usuarioToUpdate.user = usuario.user;
+    if (usuario.name !== undefined) {
+      usuarioToUpdate.name = usuario.name;
+    }
+
+    if (usuario.lastname !== undefined) {
+      usuarioToUpdate.lastname = usuario.lastname;
+    }
+
+    if (usuario.email !== undefined) {
+      usuarioToUpdate.email = usuario.email;
+    }
+
+    if (usuario.user !== undefined) {
+      usuarioToUpdate.user = usuario.user;
+    }
+    if (usuario.role !== undefined) {
+      usuarioToUpdate.role = usuario.role;
+    }
 
     return await usuarioRepository.save(usuarioToUpdate);
   }

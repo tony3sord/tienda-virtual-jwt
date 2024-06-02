@@ -42,18 +42,24 @@ export class ProductoRepository {
     if (!productoToUpdate) {
       throw new Error('Producto not found');
     }
+    if (producto.title !== undefined) productoToUpdate.title = producto.title;
+    if (producto.description !== undefined)
+      productoToUpdate.description = producto.description;
+    if (producto.amount !== undefined)
+      productoToUpdate.amount = producto.amount;
+    if (producto.images !== undefined)
+      productoToUpdate.images = producto.images;
+    if (producto.price !== undefined) productoToUpdate.price = producto.price;
+    if (producto.slug !== undefined) productoToUpdate.slug = producto.slug;
+    if (producto.inStock !== undefined)
+      productoToUpdate.inStock = producto.inStock;
+    if (producto.tags !== undefined) productoToUpdate.tags = producto.tags;
+    if (producto.sizes !== undefined)
+      productoToUpdate.sizes = [...producto.sizes.map(String)];
+    if (producto.types !== undefined) productoToUpdate.types = producto.types;
+    if (producto.gender !== undefined)
+      productoToUpdate.gender = producto.gender;
 
-    productoToUpdate.title = producto.title;
-    productoToUpdate.description = producto.description;
-    productoToUpdate.amount = producto.amount;
-    productoToUpdate.images = producto.images;
-    productoToUpdate.price = producto.price;
-    productoToUpdate.slug = producto.slug;
-    productoToUpdate.inStock = producto.inStock;
-    productoToUpdate.tags = producto.tags;
-    productoToUpdate.sizes = [...producto.sizes.map(String)];
-    productoToUpdate.types = producto.types;
-    productoToUpdate.gender = producto.gender;
     return await productoRepository.save(productoToUpdate);
   }
 

@@ -1,20 +1,29 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsIn, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUsuarioDto {
   @ApiProperty({ description: 'El nombre del usuario.' })
   @IsString()
-  readonly name: string;
+  @IsOptional()
+  readonly name?: string;
 
   @ApiProperty({ description: 'El apellido del usuario.' })
   @IsString()
-  readonly lastname: string;
+  @IsOptional()
+  readonly lastname?: string;
 
   @ApiProperty({ description: 'El nombre de usuario del usuario.' })
   @IsString()
-  readonly user: string;
+  @IsOptional()
+  readonly user?: string;
 
   @ApiProperty({ description: 'El correo del usuario.' })
   @IsEmail()
-  readonly email: string;
+  @IsOptional()
+  readonly email?: string;
+
+  @ApiProperty({ description: 'El rol del usuario.' })
+  @IsOptional()
+  @IsIn(['Admin', 'Client', 'SuperAdmin'])
+  readonly role?: 'Admin' | 'Client' | 'SuperAdmin';
 }

@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString, IsIn } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUsuarioDto {
@@ -23,6 +23,6 @@ export class CreateUsuarioDto {
   readonly password: string;
 
   @ApiProperty({ description: 'El rol del usuario.' })
-  @IsString()
+  @IsIn(['Admin', 'Client', 'SuperAdmin'])
   readonly role: 'Admin' | 'Client' | 'SuperAdmin';
 }

@@ -7,6 +7,8 @@ import {
   Delete,
   Patch,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateUsuarioDto, UpdateUsuarioDto } from '../dto';
 import { UsuarioService } from '../services/usuario.service';
@@ -27,11 +29,13 @@ export class UsuarioController {
   }
 
   @Post()
+  @UsePipes(new ValidationPipe())
   async createUsuario(@Body() usuario: CreateUsuarioDto): Promise<Usuario> {
     return await this.usuarioservice.createUsuario(usuario);
   }
 
   @Patch(':id')
+  @UsePipes(new ValidationPipe())
   async updateUsuario(
     @Param('id') id: number,
     @Body() usuario: UpdateUsuarioDto,
