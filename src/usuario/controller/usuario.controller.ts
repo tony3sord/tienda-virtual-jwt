@@ -6,20 +6,30 @@ import {
   Body,
   Delete,
   Patch,
-  Query,
   UsePipes,
   ValidationPipe,
+  UseGuards,
+  Req,
+  UnauthorizedException, // Importación agregada
 } from '@nestjs/common';
 import { CreateUsuarioDto, UpdateUsuarioDto } from '../dto';
 import { UsuarioService } from '../services/usuario.service';
 import { Usuario } from '../entity/usuario.entity';
 import { ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorators';
+import { AuthService } from 'src/auth/service/auth.service';
 
+UseGuards(RolesGuard);
 @Controller('usuario')
 export class UsuarioController {
-  constructor(private readonly usuarioservice: UsuarioService) {}
+  constructor(
+    private readonly usuarioservice: UsuarioService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Get()
+  @Roles('Admin', 'SuperAdmin')
   @ApiOperation({ summary: 'Obtener todos los Usuarios' })
   async getUsuarios(): Promise<Usuario[]> {
     return await this.usuarioservice.getUsuarios();
@@ -44,13 +54,30 @@ export class UsuarioController {
   async updateUsuario(
     @Param('id') id: number,
     @Body() usuario: UpdateUsuarioDto,
+    @Req() req,
   ): Promise<Usuario> {
+    const user = await this.authService.getMe(req);
+    if (user.id !== id && user.role !== 'SuperAdmin') {
+      throw new UnauthorizedException(
+        'No tienes permisos para realizar esta acción',
+      );
+    }
     return await this.usuarioservice.updateUsuario(id, usuario);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete Usuario' })
-  async deleteUsuario(@Param('id') id: number, @Body() password: string) {
+  @ApiOperation({ summary: 'Eliminar Usuario' })
+  async deleteUsuario(
+    @Param('id') id: number,
+    @Body() password: string,
+    @Req() req,
+  ) {
+    const user = await this.authService.getMe(req);
+    if (user.id !== id && user.role !== 'SuperAdmin') {
+      throw new UnauthorizedException(
+        'No tienes permisos para realizar esta acción',
+      );
+    }
     return await this.usuarioservice.deleteUsuario(id, password);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { LoginUsuarioDto } from '../dto/loginusuario';
 import { AuthService } from '../service/auth.service';
 import { Request as ExpressRequest } from 'express';
@@ -27,11 +27,6 @@ export class AuthController {
   @Get()
   @ApiOperation({ summary: 'Devuelve el usaurio autenticado' })
   async getMe(@Req() req: RequestWithUser) {
-    const user = req.user;
-    const usuario = await this.usuarioRepositorio.getUsuarioByEmail(
-      user.toString(),
-    );
-    const { password, ...result } = usuario;
-    return result;
+    return await this.authService.getMe(req);
   }
 }
