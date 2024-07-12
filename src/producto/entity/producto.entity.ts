@@ -15,7 +15,7 @@ export class Producto {
   @Column()
   amount: number;
 
-  @Column()
+  @Column('text', { array: true })
   images: string[];
 
   @Column()
@@ -27,10 +27,10 @@ export class Producto {
   @Column()
   inStock: number;
 
-  @Column()
+  @Column('text', { array: true })
   tags: string[];
 
-  @Column()
+  @Column('text', { array: true })
   sizes: string[];
 
   @Column()

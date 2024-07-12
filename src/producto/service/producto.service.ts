@@ -5,7 +5,9 @@ import { ProductoRepository } from '../repository/producto.repository';
 export class ProductoService {
   constructor(private readonly productoRepository: ProductoRepository) {}
   async listarProductos() {
-    return await this.productoRepository.getProductos();
+    const productos = await this.productoRepository.getProductos();
+    console.log(productos);
+    return productos;
   }
   async obtenerProducto(id: number) {
     return await this.productoRepository.getProducto(id);

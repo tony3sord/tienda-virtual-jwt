@@ -1,7 +1,9 @@
 import { EntityManager } from 'typeorm';
 import { Producto } from '../entity/producto.entity';
 import { CreateProductoDto, UpdateProductoDto } from '../dto';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class ProductoRepository {
   constructor(private dataSource: EntityManager) {}
 

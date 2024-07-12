@@ -8,17 +8,18 @@ import {
 } from '@nestjs/common';
 import { Get } from '@nestjs/common';
 import { ProductoService } from '../service/producto.service';
-import { ApiBody, ApiOperation, ApiProperty } from '@nestjs/swagger';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { CreateProductoDto, UpdateProductoDto } from '../dto';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorators';
 
 @UseGuards(RolesGuard)
-@Controller('producto')
+@Controller('product')
 export class ProductoController {
   constructor(private readonly productoService: ProductoService) {}
 
   @Get()
+  @Roles('Admin', 'SuperAdmin2')
   @ApiOperation({ summary: 'Obtener todos los productos' })
   async listarProductos() {
     return await this.productoService.listarProductos();

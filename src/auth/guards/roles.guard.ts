@@ -1,22 +1,39 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { AuthService } from '../service/auth.service';
+import { UsuarioRepository } from 'src/usuario/repository/usuario.repository';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    private readonly authService: AuthService,
+    private readonly usuarioRepository: UsuarioRepository,
+  ) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.get<string[]>(
       'roles',
       context.getHandler(),
     );
     if (!requiredRoles) {
-      return true; // Si no se requieren roles, permitir acceso
+      return true;
     }
-    const request = context.switchToHttp().getRequest();
-    const user = request.user; // Asume que el usuario está adjunto al request por un middleware de autenticación
 
-    //verificar el campo 'role'
-    return requiredRoles.includes(user.role);
+    const request = context.switchToHttp().getRequest();
+    const user2 = await this.authService.verifyToken(
+      request.headers.authorization.split(' ')[1],
+    );
+
+    if (!user2) {
+      throw new UnauthorizedException('No user found in request');
+    }
+    const usuario = await this.usuarioRepository.getUsuarioByEmail(user2.user);
+    return requiredRoles.includes(usuario.role);
   }
 }
