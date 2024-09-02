@@ -26,14 +26,19 @@ export class RolesGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user2 = await this.authService.verifyToken(
-      request.headers.authorization.split(' ')[1],
-    );
+    if (request.headers.authorization) {
+      const user2 = await this.authService.verifyToken(
+        request.headers.authorization.split(' ')[1],
+      );
+      if (!user2) {
+        throw new UnauthorizedException('No user found in request');
+      }
+      const usuario = await this.usuarioRepository.getUsuarioByEmail(
+        user2.user,
+      );
 
-    if (!user2) {
-      throw new UnauthorizedException('No user found in request');
+      return requiredRoles.includes(usuario.role);
     }
-    const usuario = await this.usuarioRepository.getUsuarioByEmail(user2.user);
-    return requiredRoles.includes(usuario.role);
+    return false;
   }
 }

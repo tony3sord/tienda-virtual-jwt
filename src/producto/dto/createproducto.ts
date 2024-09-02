@@ -1,5 +1,13 @@
-import { IsNumber, IsString } from 'class-validator';
+import {
+  IsNumber,
+  IsString,
+  ValidateNested,
+  IsArray,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { ProductoTallaDto } from './producto.talla.dto';
 
 export class CreateProductoDto {
   @ApiProperty({ description: 'El título del producto.' })
@@ -10,10 +18,6 @@ export class CreateProductoDto {
   @IsString()
   readonly description: string;
 
-  @ApiProperty({ description: 'La cantidad del producto.' })
-  @IsNumber()
-  readonly amount: number;
-
   @ApiProperty({
     description:
       'Las imágenes del producto, solo se deben enviar los enlaces de donde se guardan',
@@ -21,25 +25,26 @@ export class CreateProductoDto {
   @IsString({ each: true })
   readonly images: string[];
 
-  @ApiProperty({ description: 'El precio del producto.' })
-  @IsNumber()
-  readonly price: number;
-
   @ApiProperty({ description: 'El slug del producto.' })
   @IsString()
   readonly slug: string;
-
-  @ApiProperty({ description: 'La cantidad en stock del producto.' })
-  @IsNumber()
-  readonly inStock: number;
 
   @ApiProperty({ description: 'Las etiquetas del producto.' })
   @IsString({ each: true })
   readonly tags: string[];
 
-  @ApiProperty({ description: 'Las tallas del producto.' })
-  @IsString({ each: true })
-  readonly sizes: ('XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL')[];
+  @ApiProperty({ description: 'la cantidad existentes en carritos.' })
+  @IsNumber()
+  @IsOptional()
+  readonly inStock?: number;
+
+  @ApiProperty({
+    description: 'Las tallas del producto con sus precios y cantidades.',
+  })
+  @ValidateNested({ each: true })
+  @Type(() => ProductoTallaDto)
+  @IsArray()
+  readonly tallas: ProductoTallaDto[];
 
   @ApiProperty({ description: 'El tipo de producto.' })
   @IsString()

@@ -6,6 +6,9 @@ import * as dotenv from 'dotenv';
 import { ProductoModule } from './producto/producto.module';
 import { UsuarioRepository } from './usuario/repository/usuario.repository';
 import { CreateUsuarioDto } from './usuario/dto';
+import { ProductoTalla } from './producto/entity/producto-talla.entity';
+import { Producto } from './producto/entity/producto.entity';
+import { Usuario } from './usuario/entity/usuario.entity';
 dotenv.config();
 
 @Module({
@@ -21,6 +24,7 @@ dotenv.config();
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
+      entities: [ProductoTalla, Producto, Usuario],
       synchronize: true,
     }),
   ],
@@ -32,11 +36,11 @@ export class AppModule implements OnModuleInit {
     const adminUser = await this.userService.getSuperAdmin();
     if (!adminUser) {
       const user: CreateUsuarioDto = {
-        name: 'Super Admin',
-        email: 'super@gmail.com',
-        lastname: 'Super Admin',
-        user: 'super',
-        password: '1234',
+        name: process.env.USER_NAME,
+        email: process.env.USER_EMAIL,
+        lastname: process.env.USER_LASTNAME,
+        user: process.env.USER_USER,
+        password: process.env.USER_PASSWORD,
         role: 'SuperAdmin',
       };
       await this.userService.createUsuario(user);

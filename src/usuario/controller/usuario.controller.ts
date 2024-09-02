@@ -10,7 +10,7 @@ import {
   ValidationPipe,
   UseGuards,
   Req,
-  UnauthorizedException, // Importación agregada
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUsuarioDto, UpdateUsuarioDto } from '../dto';
 import { UsuarioService } from '../services/usuario.service';

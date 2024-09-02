@@ -1,7 +1,7 @@
 import { EntityManager } from 'typeorm';
 import { Usuario } from '../entity/usuario.entity';
 import { CreateUsuarioDto, UpdateUsuarioDto } from '../dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -9,11 +9,13 @@ export class UsuarioRepository {
   constructor(private dataSource: EntityManager) {}
 
   async buscarPorId(id: string) {
-    return await this.dataSource
+    const user = await this.dataSource
       .getRepository(Usuario)
       .createQueryBuilder('usuario')
       .where({ id: id })
       .getOne();
+    if (!user) throw new NotFoundException();
+    return user;
   }
 
   async getUsuarios(): Promise<Usuario[]> {

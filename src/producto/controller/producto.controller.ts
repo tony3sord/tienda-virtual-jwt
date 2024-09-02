@@ -4,7 +4,10 @@ import {
   Param,
   Patch,
   Post,
+  Body,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Get } from '@nestjs/common';
 import { ProductoService } from '../service/producto.service';
@@ -19,7 +22,6 @@ export class ProductoController {
   constructor(private readonly productoService: ProductoService) {}
 
   @Get()
-  @Roles('Admin', 'SuperAdmin2')
   @ApiOperation({ summary: 'Obtener todos los productos' })
   async listarProductos() {
     return await this.productoService.listarProductos();
@@ -28,14 +30,15 @@ export class ProductoController {
   @Get(':id')
   @ApiOperation({ summary: 'Obtener un producto por Id' })
   async obtenerProducto(@Param('id') id: number) {
-    return await this.obtenerProducto(id);
+    return await this.productoService.obtenerProducto(id);
   }
 
   @Post()
   @Roles('Admin', 'SuperAdmin')
   @ApiBody({ type: CreateProductoDto })
   @ApiOperation({ summary: 'Crear un producto' })
-  async createProducto(createProducto: CreateProductoDto) {
+  @UsePipes(new ValidationPipe())
+  async createProducto(@Body() createProducto: CreateProductoDto) {
     return await this.productoService.createProducto(createProducto);
   }
 
@@ -43,9 +46,10 @@ export class ProductoController {
   @Roles('Admin', 'SuperAdmin')
   @ApiBody({ type: UpdateProductoDto })
   @ApiOperation({ summary: 'Actualizar un producto' })
+  @UsePipes(new ValidationPipe())
   async updateProducto(
     @Param('id') id: number,
-    updateProducto: UpdateProductoDto,
+    @Body() updateProducto: UpdateProductoDto,
   ) {
     return await this.productoService.updateProducto(id, updateProducto);
   }

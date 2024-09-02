@@ -1,7 +1,8 @@
 import { EntityManager } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Producto } from '../entity/producto.entity';
 import { CreateProductoDto, UpdateProductoDto } from '../dto';
-import { Injectable } from '@nestjs/common';
+import { ProductoTalla } from '../entity/producto-talla.entity';
 
 @Injectable()
 export class ProductoRepository {
@@ -16,18 +17,30 @@ export class ProductoRepository {
 
   async createProducto(producto: CreateProductoDto): Promise<Producto> {
     const productoRepository = this.dataSource.getRepository(Producto);
+    const productoTallaRepository =
+      this.dataSource.getRepository(ProductoTalla);
+
     let newProducto = new Producto();
     newProducto.title = producto.title;
     newProducto.description = producto.description;
-    newProducto.amount = producto.amount;
     newProducto.images = producto.images;
-    newProducto.price = producto.price;
     newProducto.slug = producto.slug;
-    newProducto.inStock = producto.inStock;
     newProducto.tags = producto.tags;
-    newProducto.sizes = [...producto.sizes.map(String)];
     newProducto.types = producto.types;
     newProducto.gender = producto.gender;
+
+    if (producto.tallas) {
+      newProducto.tallas = await Promise.all(
+        producto.tallas.map(async (tallaDto) => {
+          let talla = new ProductoTalla();
+          talla.size = tallaDto.size;
+          talla.price = tallaDto.price;
+          talla.amount = tallaDto.amount;
+          return await productoTallaRepository.save(talla);
+        }),
+      );
+    }
+
     return await productoRepository.save(newProducto);
   }
 
@@ -36,6 +49,9 @@ export class ProductoRepository {
     producto: UpdateProductoDto,
   ): Promise<Producto> {
     const productoRepository = this.dataSource.getRepository(Producto);
+    const productoTallaRepository =
+      this.dataSource.getRepository(ProductoTalla);
+
     const productoToUpdate = await productoRepository
       .createQueryBuilder('producto')
       .where('producto.id = :id', { id })
@@ -44,33 +60,49 @@ export class ProductoRepository {
     if (!productoToUpdate) {
       throw new Error('Producto not found');
     }
+
     if (producto.title !== undefined) productoToUpdate.title = producto.title;
     if (producto.description !== undefined)
       productoToUpdate.description = producto.description;
-    if (producto.amount !== undefined)
-      productoToUpdate.amount = producto.amount;
     if (producto.images !== undefined)
       productoToUpdate.images = producto.images;
-    if (producto.price !== undefined) productoToUpdate.price = producto.price;
     if (producto.slug !== undefined) productoToUpdate.slug = producto.slug;
-    if (producto.inStock !== undefined)
-      productoToUpdate.inStock = producto.inStock;
     if (producto.tags !== undefined) productoToUpdate.tags = producto.tags;
-    if (producto.sizes !== undefined)
-      productoToUpdate.sizes = [...producto.sizes.map(String)];
     if (producto.types !== undefined) productoToUpdate.types = producto.types;
     if (producto.gender !== undefined)
       productoToUpdate.gender = producto.gender;
+
+    // Actualizar las tallas
+    if (producto.tallas !== undefined) {
+      // Eliminar las tallas existentes
+      await productoTallaRepository.delete({ producto: productoToUpdate });
+
+      // Crear y asignar las nuevas tallas
+      productoToUpdate.tallas = await Promise.all(
+        producto.tallas.map(async (tallaDto) => {
+          let talla = new ProductoTalla();
+          talla.size = tallaDto.size;
+          talla.price = tallaDto.price;
+          talla.amount = tallaDto.amount;
+          talla.producto = productoToUpdate;
+          return await productoTallaRepository.save(talla);
+        }),
+      );
+    }
 
     return await productoRepository.save(productoToUpdate);
   }
 
   async getProducto(id: number): Promise<Producto> {
-    return await this.dataSource
+    const product = await this.dataSource
       .getRepository(Producto)
       .createQueryBuilder('producto')
       .where('producto.id = :id', { id })
       .getOne();
+    if (!product) {
+      throw new NotFoundException();
+    }
+    return product;
   }
 
   async deleteProducto(id: number) {
@@ -80,8 +112,9 @@ export class ProductoRepository {
       .where('producto.id = :id', { id })
       .getOne();
     if (!productoToDelete) {
-      throw new Error('Producto not found');
+      throw new NotFoundException();
     }
-    return await productoRepository.remove(productoToDelete);
+    await productoRepository.remove(productoToDelete);
+    return 'Producto eliminado correctamente';
   }
 }

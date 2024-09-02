@@ -1,8 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { ProductoTalla } from './producto-talla.entity';
+import { IsOptional } from 'class-validator';
 
 @Entity()
 export class Producto {
-  //Columna primaria autoincremental
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -12,26 +13,20 @@ export class Producto {
   @Column()
   description: string;
 
-  @Column()
-  amount: number;
-
   @Column('text', { array: true })
   images: string[];
 
   @Column()
-  price: number;
-
-  @Column()
   slug: string;
 
-  @Column()
+  @Column({ nullable: true })
   inStock: number;
 
   @Column('text', { array: true })
   tags: string[];
 
-  @Column('text', { array: true })
-  sizes: string[];
+  @OneToMany(() => ProductoTalla, (productoTalla) => productoTalla.producto)
+  tallas: ProductoTalla[];
 
   @Column()
   types: string;
