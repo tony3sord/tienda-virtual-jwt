@@ -89,8 +89,9 @@ export class ProductoRepository {
         }),
       );
     }
-
-    return await productoRepository.save(productoToUpdate);
+    const a = await productoRepository.save(productoToUpdate);
+    console.log(a);
+    return a;
   }
 
   async getProducto(id: number): Promise<Producto> {
@@ -107,14 +108,35 @@ export class ProductoRepository {
 
   async deleteProducto(id: number) {
     const productoRepository = this.dataSource.getRepository(Producto);
+    const productoTallaRepository =
+      this.dataSource.getRepository(ProductoTalla);
+
+    await productoTallaRepository
+      .createQueryBuilder()
+      .delete()
+      .from(ProductoTalla)
+      .where('productoId = :id', { id })
+      .execute();
+
     const productoToDelete = await productoRepository
       .createQueryBuilder('producto')
       .where('producto.id = :id', { id })
       .getOne();
+
     if (!productoToDelete) {
       throw new NotFoundException();
     }
+
     await productoRepository.remove(productoToDelete);
+
     return 'Producto eliminado correctamente';
+  }
+
+  async getProdutcName(name: string): Promise<Producto> {
+    return await this.dataSource
+      .getRepository(Producto)
+      .createQueryBuilder('producto')
+      .where('producto.title = :name', { name })
+      .getOne();
   }
 }

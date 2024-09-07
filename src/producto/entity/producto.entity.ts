@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { ProductoTalla } from './producto-talla.entity';
-import { IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
 
 @Entity()
 export class Producto {
@@ -26,6 +26,7 @@ export class Producto {
   tags: string[];
 
   @OneToMany(() => ProductoTalla, (productoTalla) => productoTalla.producto)
+  @Type(() => ProductoTalla)
   tallas: ProductoTalla[];
 
   @Column()

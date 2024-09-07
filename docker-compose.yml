@@ -3,12 +3,12 @@ services:
   app:
     build: .
     ports:
-      - '4000:4000'
+      - '3000:3000'
     depends_on:
       - db
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/postgres
   db:
-    image: postgres:13
+    image: postgres:15
     environment:
       - POSTGRES_PASSWORD=password

@@ -1,20 +1,23 @@
-# Establece la imagen base
+# Usar la imagen base de Node.js 20.12.0
 FROM node:20.12.0
 
-# Crea el directorio de la aplicación en el contenedor
+# Establecer el directorio de trabajo
 WORKDIR /usr/src/app
 
-# Copia los archivos del paquete.json y el paquete-lock.json
+# Copiar package.json y package-lock.json
 COPY package*.json ./
 
-# Instala las dependencias del proyecto
+# Instalar las dependencias
 RUN npm install
 
-# Copia el resto de los archivos de la aplicación
+# Copiar el resto de los archivos de la aplicación
 COPY . .
 
-# Expone el puerto que tu aplicación utilizará
-EXPOSE 4000
+# Construir la aplicación
+RUN npm run build
 
-# Comando para ejecutar la aplicación
-CMD [ "npm", "start" ]
+# Exponer el puerto 3000
+EXPOSE 3000
+
+# Comando para iniciar la aplicación
+CMD ["npm", "run", "start:prod"]

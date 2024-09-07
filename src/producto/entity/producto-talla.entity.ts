@@ -1,11 +1,6 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Producto } from './producto.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class ProductoTalla {
@@ -18,10 +13,10 @@ export class ProductoTalla {
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
-  @Column()
+  @Column('int')
   amount: number;
 
   @ManyToOne(() => Producto, (producto) => producto.tallas)
-  @JoinColumn({ name: 'productoId' })
+  @Exclude({ toPlainOnly: true })
   producto: Producto;
 }

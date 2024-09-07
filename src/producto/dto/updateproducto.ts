@@ -13,12 +13,12 @@ export class UpdateProductoDto {
   @ApiProperty({ description: 'El título del producto.' })
   @IsString()
   @IsOptional()
-  readonly title?: string;
+  readonly title: string;
 
   @ApiProperty({ description: 'La descripción del producto.' })
   @IsString()
   @IsOptional()
-  readonly description?: string;
+  readonly description: string;
 
   @ApiProperty({
     description:
@@ -26,17 +26,17 @@ export class UpdateProductoDto {
   })
   @IsOptional()
   @IsString({ each: true })
-  readonly images?: string[];
+  readonly images: string[];
 
   @ApiProperty({ description: 'El slug del producto.' })
   @IsOptional()
   @IsString()
-  readonly slug?: string;
+  readonly slug: string;
 
   @ApiProperty({ description: 'Las etiquetas del producto.' })
   @IsOptional()
   @IsString({ each: true })
-  readonly tags?: string[];
+  readonly tags: string[];
 
   @ApiProperty({
     description: 'Las tallas del producto con sus precios y cantidades.',
@@ -45,15 +45,15 @@ export class UpdateProductoDto {
   @Type(() => ProductoTallaDto)
   @IsOptional()
   @IsArray()
-  readonly tallas?: ProductoTallaDto[];
+  readonly tallas: ProductoTallaDto[];
 
   @ApiProperty({ description: 'El tipo de producto.' })
   @IsOptional()
   @IsString()
-  readonly types?: 'shirts' | 'pants' | 'hoodies' | 'hats';
+  readonly types: 'shirts' | 'pants' | 'hoodies' | 'hats';
 
   @ApiProperty({ description: 'El género del producto.' })
   @IsOptional()
   @IsString()
-  readonly gender?: 'men' | 'women' | 'unisex' | 'kid';
+  readonly gender: 'men' | 'women' | 'unisex' | 'kid';
 }

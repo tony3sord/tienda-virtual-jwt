@@ -52,7 +52,18 @@ export class ProductoController {
     @Param('id') id: number,
     @Body() updateProducto: UpdateProductoDto,
   ) {
-    return await this.productoService.updateProducto(id, updateProducto);
+    const updatedProducto = await this.productoService.updateProducto(
+      id,
+      updateProducto,
+    );
+
+    if (updatedProducto.tallas) {
+      updatedProducto.tallas.forEach((talla) => {
+        delete talla.producto;
+      });
+    }
+
+    return updatedProducto;
   }
 
   @Delete(':id')
