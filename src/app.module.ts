@@ -1,32 +1,21 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { UsuarioModule } from './usuario/usuario.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
+dotenv.config();
+import { UsuarioModule } from './usuario/usuario.module';
+import { AuthModule } from './auth/auth.module';
 import { ProductoModule } from './producto/producto.module';
 import { UsuarioRepository } from './usuario/repository/usuario.repository';
 import { CreateUsuarioDto } from './usuario/dto';
-import { ProductoTalla } from './producto/entity/producto-talla.entity';
-import { Producto } from './producto/entity/producto.entity';
-import { Usuario } from './usuario/entity/usuario.entity';
-dotenv.config();
+import { ProvidersModule } from './providers/providers.module';
+import { TypeOrmConfig } from './common/config/typeOrm.config';
 
 @Module({
   imports: [
+    TypeOrmConfig,
     UsuarioModule,
     ProductoModule,
     AuthModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT),
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      autoLoadEntities: true,
-      entities: [ProductoTalla, Producto, Usuario],
-      synchronize: true,
-    }),
+    ProvidersModule,
   ],
 })
 export class AppModule implements OnModuleInit {

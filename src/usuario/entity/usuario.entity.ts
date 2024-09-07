@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Providers } from 'src/providers/entity/providers.entity';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class Usuario {
@@ -23,4 +30,9 @@ export class Usuario {
 
   @Column()
   role: string;
+
+  @OneToOne(() => Providers, (providers) => providers.usuario, {
+    nullable: true,
+  })
+  providers: Providers;
 }
