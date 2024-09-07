@@ -15,12 +15,13 @@ import {
 import { CreateUsuarioDto, UpdateUsuarioDto } from '../dto';
 import { UsuarioService } from '../services/usuario.service';
 import { Usuario } from '../entity/usuario.entity';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorators';
 import { AuthService } from 'src/auth/service/auth.service';
 
-UseGuards(RolesGuard);
+@ApiTags('User CRUD')
+@UseGuards(RolesGuard)
 @Controller('usuario')
 export class UsuarioController {
   constructor(

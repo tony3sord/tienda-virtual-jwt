@@ -11,11 +11,12 @@ import {
 } from '@nestjs/common';
 import { Get } from '@nestjs/common';
 import { ProductoService } from '../service/producto.service';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateProductoDto, UpdateProductoDto } from '../dto';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorators';
 
+@ApiTags('Products CRUD')
 @UseGuards(RolesGuard)
 @Controller('product')
 export class ProductoController {

@@ -4,12 +4,13 @@ import { AuthService } from '../service/auth.service';
 import { Request as ExpressRequest } from 'express';
 import { Usuario } from 'src/usuario/entity/usuario.entity';
 import { UsuarioRepository } from 'src/usuario/repository/usuario.repository';
-import { ApiOperation, ApiProperty } from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 interface RequestWithUser extends ExpressRequest {
   user: Usuario;
 }
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(

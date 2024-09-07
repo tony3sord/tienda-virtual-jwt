@@ -14,12 +14,14 @@ async function bootstrap() {
       'Cuando se inicia el servidor la api busca un super admin y si no esta creado lo crea email:super@gmail.com,password:1234',
     )
     .setVersion('1.0')
-    .addTag('rutas')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('documentation', app, document);
 
   await app.listen(port);
+  console.log(
+    `Server running, click here => http://127.0.0.1:${port}/documentation`,
+  );
 }
 
 bootstrap();
