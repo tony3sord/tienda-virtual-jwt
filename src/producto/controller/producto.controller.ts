@@ -8,6 +8,7 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { Get } from '@nestjs/common';
 import { ProductoService } from '../service/producto.service';
@@ -44,6 +45,7 @@ export class ProductoController {
   }
 
   @Patch(':id')
+  @HttpCode(204)
   @Roles('Admin', 'SuperAdmin')
   @ApiBody({ type: UpdateProductoDto })
   @ApiOperation({ summary: 'Actualizar un producto' })

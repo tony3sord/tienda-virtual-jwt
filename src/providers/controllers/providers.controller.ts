@@ -9,12 +9,16 @@ import {
   UsePipes,
   HttpCode,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUsuarioDto, UpdateUsuarioDto } from 'src/usuario/dto';
-import { ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiOperation, ApiBody, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorators';
 import { ProvidersService } from '../services/providers.service';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
+@ApiTags('Providers CRUD')
+@UseGuards(RolesGuard)
 @Controller('providers')
 export class ProvidersController {
   constructor(private readonly providersService: ProvidersService) {}

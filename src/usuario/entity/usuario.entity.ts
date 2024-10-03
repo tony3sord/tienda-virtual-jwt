@@ -1,11 +1,5 @@
 import { Providers } from 'src/providers/entity/providers.entity';
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 
 @Entity()
 export class Usuario {

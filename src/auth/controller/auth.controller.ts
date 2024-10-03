@@ -15,7 +15,6 @@ interface RequestWithUser extends ExpressRequest {
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly usuarioRepositorio: UsuarioRepository,
   ) {}
 
   @Post('login')
