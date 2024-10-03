@@ -16,6 +16,7 @@ import { ApiOperation, ApiBody, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorators';
 import { ProvidersService } from '../services/providers.service';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { CreateProvidersDto } from '../dto/createproviders.dto';
 
 @ApiTags('Providers CRUD')
 @UseGuards(RolesGuard)
@@ -24,23 +25,11 @@ export class ProvidersController {
   constructor(private readonly providersService: ProvidersService) {}
 
   @Post()
-  @ApiBody({ type: CreateUsuarioDto })
+  @ApiBody({ type: CreateProvidersDto })
   @ApiOperation({ summary: 'Insertar un proveedor' })
   @UsePipes(new ValidationPipe())
-  async createProviders(@Body() usuario: CreateUsuarioDto) {
-    return await this.providersService.createProviders(usuario);
-  }
-
-  @Patch(':id')
-  @HttpCode(204)
-  @Roles('SuperAdmin', 'Admin')
-  @ApiBody({ type: UpdateUsuarioDto })
-  @ApiOperation({ summary: 'Editar un proveedor' })
-  async updateProviders(
-    @Param() id: number,
-    @Body() usuario: UpdateUsuarioDto,
-  ) {
-    return await this.providersService.updateProviders(id, usuario);
+  async createProviders(@Body() providers: CreateProvidersDto) {
+    return await this.providersService.createProviders(providers);
   }
 
   @Get()

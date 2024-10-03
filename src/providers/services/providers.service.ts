@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUsuarioDto, UpdateUsuarioDto } from 'src/usuario/dto';
+import { CreateProvidersDto } from '../dto/createproviders.dto';
 
 @Injectable()
 export class ProvidersService {
-  async createProviders(usuario: CreateUsuarioDto) {
-    return 0;
-  }
-  async updateProviders(id: number, usuario: UpdateUsuarioDto) {
+  async createProviders(usuario: CreateProvidersDto) {
     return 0;
   }
   async getProviders() {
